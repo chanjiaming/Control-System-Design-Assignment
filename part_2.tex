@@ -1,0 +1,119 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{titlesec}
+\usepackage{changepage}
+\usepackage{setspace}
+\usepackage{placeins}
+\usepackage{booktabs}
+
+\setstretch{1.25}
+\titlespacing*{\section}{0pt}{1.5ex}{1ex}
+\titlespacing*{\subsection}{2em}{1.2ex}{0.8ex}
+\setlength{\parindent}{2em}
+
+\begin{document}
+\setcounter{section}{1}
+\section{Self-Guided Vehicles}
+\subsection{Lag Compensator}
+\begin{adjustwidth}{2em}{0pt}
+\begin{equation}
+    G_1(s) = \frac{5}{s(s+2)}, \quad H_1(s) = 1
+\end{equation}
+The closed-loop transfer function of the inner loop, denoted as $G_i(s)$, is:
+\begin{equation}
+    G_i(s) = \frac{G_1(s)}{1 + G_1(s)H_1(s)} = \frac{\frac{5}{s(s+2)}}{1 + \frac{5}{s(s+2)}} = \frac{5}{s^2 + 2s + 5}
+\end{equation}
+With K = 2, the overall system OLTF:
+\end{adjustwidth}
+\begin{equation}
+    G(s) = K \times G_i(s) \times G_2(s) = 2 \times \frac{5}{s^2 + 2s + 5} \times \frac{5}{s(s+3)} = \frac{50}{s(s^3 + 5s^2 + 11s + 15)}
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+Since the system is 1st order, the $K_p = \infty$. Thus, assumed that $e_{ss}$ mentioned in the question to be related to $K_v$
+\begin{equation}
+    K_v = \lim_{s \to 0} sG(s) = \frac{50}{15} = \frac{10}{3} \approx 3.33
+\end{equation}
+\begin{equation}
+    e_{ss} = \frac{1}{K_v} = \frac{3}{10} = 0.3
+\end{equation}
+\begin{equation}
+    e_{ss,new} = \frac{0.3}{30} = 0.1 
+\end{equation}
+\begin{equation}
+    K_{v,new} = \frac{1}{0.01} = 100
+\end{equation}
+\begin{equation}
+    K_{new} = 15 \times 100 = 1500
+\end{equation}
+\begin{equation}
+    shift_K = 20\log \frac{1500}{50} = 29.5424dB
+\end{equation}
+\end{adjustwidth}
+
+\begin{equation}
+    With \ \%OS = 11\%, \ \xi = \frac{-ln(0.11)}{\sqrt{\pi^2+ln^2(0.11)}} = 0.5749
+\end{equation}
+
+\begin{equation}
+    \phi_M \approx \tan^{-1} \left( \frac{2\xi}{\sqrt{-2\xi^2 + \sqrt{1 + 4\xi^4}}} \right) + 10^\circ \approx 67.4^\circ
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+    $With\  \phi_{target} = -180^\circ + 67.4^\circ = -112.6^\circ, \ \omega_{c,target} = 0.5255\ rad/s,\ M = 45.73\ dB$ \\ .
+\end{adjustwidth}
+%created by Chan Jia Ming, Zhang Xiaotian, Rasyiqah Aqilah
+%All rights reserved
+\begin{equation}
+    z_c = \frac{\omega_{c,target}}{10} = 0.05255 \text{ rad/s}, \quad p_c = 0.0002719 \text{ rad/s}
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+    The resulting compensator $G_c(s)$ is:
+\end{adjustwidth}
+\begin{equation}
+    G_c(s) = \frac{0.005174(s + 0.05255)}{s + 0.0002719}
+\end{equation}
+
+\subsection{Lead-Lag Compensator}
+\begin{adjustwidth}{2em}{0pt}
+    Using the lag-compensated system from section 2.1 with the gain $K=60$, the current phase margin is $\phi_m = 62^\circ$ at frequency $\omega = 0.53$ rad/s.
+\end{adjustwidth}
+\begin{equation}
+    \phi_{max} = 57.414^\circ - 62^\circ + 10^\circ = 8.4114^\circ
+\end{equation}
+
+The lead compensator parameter $\beta$ is determined by:
+\begin{equation}
+    \beta = \frac{1 - \sin \phi_{max}}{1 + \sin \phi_{max}} = 0.8256
+\end{equation}
+
+The required magnitude contribution at the new crossover frequency is:
+\begin{equation}
+    |G_c(j\omega_{max})| = \frac{1}{\sqrt{\beta}} = 1.1004 \Rightarrow 20 \log(1.1004) = 0.8301 \text{ dB}
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+    From the bode plot as shown in Figure 17, the frequency where the system magnitude is $-0.8301$ dB is $\omega_{max} = 0.584$ rad/s. The lead zero ($z_c$) and pole ($p_c$) are calculated as:\\
+\end{adjustwidth}
+\begin{equation}
+    z_c = \omega_{max} \sqrt{\beta} = 0.5307, \quad p_c = \frac{z_c}{\beta} = 0.6426
+\end{equation}
+
+The lead portion of the compensator is:
+    \begin{equation}
+    G_{c,lead}(s) = \frac{1}{\beta} \left( \frac{s + z_c}{s + p_c} \right) = \frac{1.2107(s + 0.5307)}{s + 0.6426}
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+Combining the lead compensator with the previous lag compensator result:
+\end{adjustwidth}
+\begin{equation}
+    G_{c,lead-lag}(s) = \frac{1.2107 \times 0.005174(s + 0.5307)(s + 0.05255)}{(s + 0.6426)(s + 0.0002719)}
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+The simplified overall compensator is:
+\end{adjustwidth}
+\begin{equation}
+    G_c(s) = \frac{0.00626(s + 0.5307)(s + 0.05255)}{(s + 0.6426)(s + 0.0002719)}
+\end{equation}
+\end{document}
