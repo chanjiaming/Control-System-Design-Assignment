@@ -1,0 +1,362 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[margin=0.8in]{geometry}
+\usepackage{titlesec}
+\usepackage{changepage}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{placeins}
+\setstretch{1.25}
+\titlespacing*{\section}
+{0pt}{1.5ex}{1ex}
+\titlespacing*{\subsection}
+{2em}{1.2ex}{0.8ex}
+\setlength{\parindent}{2em}
+\begin{document}
+
+\section{Heat-Exchanger Process Control}
+
+\subsection{Root Locus Sketching}
+\begin{adjustwidth}{2em}{0pt}
+The open-loop transfer function is given by:
+\end{adjustwidth}
+\begin{equation}
+    G_{OL}(s) = G_c(s) \cdot G_v(s) \cdot G_p(s) = K \cdot \frac{0.02}{4s+1} \cdot \frac{70}{50s+1} 
+\end{equation}
+
+\begin{equation}
+    G_{OL}(s)\cdot H(s)= \frac{1.4K}{(4s+1)(50s+1)(12s+1)}
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+The poles are located at $s_1 = -0.25$, $s_2 = -0.02$, and $s_3 = -0.0833$. Since all the poles are real, there is no need to find $\theta_d$ and $\theta_a$ 
+\\ Since there is no zero, there will be 3 branches heading to infinity.
+\\ The asymptote centroid $\sigma_a$ and angles $\phi_a$ are:
+\end{adjustwidth} 
+\begin{equation}
+\begin{aligned}
+    \\ \sigma_a &= \frac{-0.25 - 0.02 - 0.0833}{3} = -0.1178 \\
+    \phi_a &= 60^\circ, 180^\circ, 300^\circ, for\  k = 0,1,2,...
+\end{aligned}
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+$\sigma_a=180^\circ$ indicates a branch extends to infinity along the real axis, while the asymptote for $\sigma_a=300^\circ$ is simply the symmetry of $\sigma_a=60^\circ$.
+\end{adjustwidth}
+\begin{equation}
+\omega_{d,asym,test}=0.1178tan60^\circ = 0.204
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+To find the transfer function, T(s):
+\end{adjustwidth}
+\begin{equation}
+T(s) = \frac{K G(s)}{1 + K G(s) H(s)}
+\end{equation}
+
+\begin{equation}
+T(s)
+= \frac{\dfrac{1.4K}{(4s+1)(50s+1)}}
+{1 + \dfrac{1.4K}{(4s+1)(50s+1)(12s+1)}}
+\end{equation}
+
+\begin{equation}
+T(s) = \frac{1.4K(12s+1)}
+{(4s+1)(50s+1)(12s+1) + 1.4K}
+\end{equation}
+
+\begin{equation}
+T(s)
+= \frac{1.4K(12s+1)}
+{2400s^3 + 848s^2 + 66s + 1 + 1.4K}
+\end{equation}
+\newpage
+\begin{adjustwidth}{2em}{0pt}
+With the characteristic equation, ${2400s^3 + 848s^2 + 66s + 1 + 1.4K}$
+\end{adjustwidth}
+
+\[
+\begin{array}{c|cc}
+s^3 & 2400 & 66 \\
+s^2 & 848  & 1 + 1.4K \\
+s^1 & 66 - \dfrac{150}{53}(1 + 1.4K) & 0 \\
+\end{array}
+\]
+
+\begin{equation}
+ROZ: 66 - \frac{150}{53}(1 + 1.4K) = 0 => K = 15.9429
+\end{equation}
+
+\begin{equation}
+1.4K = 22.3201;\ \ 848s^2 + 23.3201 = 0 => s_{cross} = \pm j\,0.1658
+\end{equation}
+
+\begin{align}
+\frac{d}{ds} (P(s)) &= \frac{d}{ds} \left[ 1.4K \left[ (4s+1)(50s+1)(12s+1) \right]^{-1} \right] = 0 \\
+&\frac{d}{ds} \left[ 1.4K (2400s^3 + 848s^2 + 66s + 1)^{-1} \right] = 0 \\
+&7200s^2 + 1696s + 66 = 0
+\end{align}
+\begin{equation}
+s_1 = -0.0492 (BAP), \ s_2 = -0.1864(invalid)   
+\end{equation}
+\begin{adjustwidth}{2em}{0pt} 
+With all the information collected, root locus is drawn as shown in Figure 1 and Figure 2 respectively. The root locus will be further processed to design the PD controller in the same figure. The hand-drawn root locus will later be verified through MATLAB simulation.
+\end{adjustwidth}
+\subsection{Gain Adjustment}
+\begin{equation}
+    \xi = 0.7,\ \theta_{dom} = \cos^{-1}(0.7) = 45.573^\circ
+\end{equation}
+\begin{equation}
+    let,\ \sigma_{test}=0.06,\ \omega_{d, test}=0.06tan45.573^\circ = 0.06121
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+$With\ s_{test} = -0.06 \pm j0.06121$, from the root locus in Figure 1, $s_{d} = -0.046 \pm j0.046$
+\end{adjustwidth}
+
+
+\begin{equation}
+    K = \left| \frac{(4s+1)(50s+1)(12s+1)}{1.4} \right|_{s = -0.046 + j0.046} = 1.1222
+\end{equation}
+
+Thus, the characteristic equation:
+\begin{equation}
+    {2400s^3 + 848s^2 + 66s + 2.57108 = 0 => s_{1,2} = -0.0443\pm j0.0457,\  s_3= -0.2647}
+\end{equation}
+\begin{adjustwidth}{2em}{0pt} 
+Since 5 $\omega_{s1,2} = 0.2215 < \omega_{s_3}$, this system could be approximated as a 2nd order system. Thus, 
+\end{adjustwidth}
+\begin{equation}
+    T_s=\frac{4}{\omega_d}=\frac{4}{0.046}=86.9565s
+\end{equation}
+\begin{equation}
+T(s)
+= \frac{1.57108(12s+1)}
+{2400s^3 + 848s^2 + 66s + 2.5711}
+\end{equation}
+
+\newpage
+\subsection{1st PD Controller Design}
+\begin{adjustwidth}{2em}{0pt} 
+The new desired settling time is $20\%$ smaller:
+\end{adjustwidth}
+\begin{equation}
+    T_{s,new} = 86.9565 \times 0.8 = 69.5652 \, \text{s}
+\end{equation}
+%created by Chan Jia Ming, Zhang Xiaotian, Rasyiqah Aqilah
+%All rights reserved
+\begin{equation}
+    \sigma_{d,new} = \frac{4}{T_{s,new}} = 0.0575
+\end{equation}
+
+Using the same damping ratio $\xi = 0.7$:
+\begin{equation}
+    \omega_{d,new} = 0.0575 \tan(45.573^\circ) = 0.0587
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+The new desired pole is $s_{d,new} = -0.0575 \pm j0.0587$.
+\end{adjustwidth}
+
+\begin{equation}
+    K = \left| \frac{(4s+1)(50s+1)(12s+1)}{1.4} \right|_{s = s_{d,new}} = 1.5412
+\end{equation}
+
+Thus, the characteristic equation
+\begin{equation}
+    2400s^3 + 848s^2 + 66s + 3.15768 = 0 => s_{1,2} =-0.0420\pm j0.0559, s_3 = -0.2694
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+Since $5\  \sigma_{1,2} = 0.21 < \sigma_{3}$, this system could be approximated as a 2nd order system. Thus, the settling time formula (19) is applicable.\\ 
+\end{adjustwidth}
+\begin{adjustwidth}{2em}{0pt}
+Applying the angle criterion to find the PD zero location $z_c$:
+\end{adjustwidth}
+\begin{equation}
+    \sum \theta_{poles} - \theta_{zero} = 180^\circ
+\end{equation}
+
+\begin{equation}
+    \tan^{-1}\left( \frac{0.0587}{0.25 - 0.0575} \right) + \tan^{-1}\left( \frac{0.0587}{1/12 - 0.0575} \right) + \\ \left[ 180^\circ - \tan^{-1}\left( \frac{0.0587}{0.0575 - 0.02} \right) \right] + \theta_{z_1} = 180^\circ
+\end{equation}
+
+\begin{equation}
+    \theta_{z_1} = 25.777^\circ
+\end{equation}
+\begin{equation}
+    z_1 = -0.0575 - \frac{0.0587}{tan25.777^\circ} = -0.1791
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+Hence, $G_D(s) = K_D(s + 0.1791)$
+\end{adjustwidth}
+
+\begin{equation}
+    G_D(s) \cdot G_{OL} \cdot H(S) = \frac{1.4 K_D (s + 0.1791)}{(4s+1)(50s+1)(12s+1)}
+\end{equation}
+
+\newpage
+The new gain $K_D$ is:
+\begin{equation}
+    K_D = \left| \frac{(4s+1)(50s+1)(12s+1)}{1.4(s + 0.1791)} \right|_{s = s_{d,new}} = 11.414
+\end{equation}
+
+\begin{equation}
+G_{OL}(s)\,G_{P}(s)\,H(s)
+= \frac{15.9796(s + 0.1791)}{(4s+1)(50s+1)(12s+1)}
+\end{equation}
+
+\begin{equation}
+T(s) = \frac{15.9796(s + 0.1791)(12s+1)}{(4s+1)(50s+1)(12s+1) + 15.9796(s + 0.1791)}
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt} 
+To be honest it will be very torturing to manually expand T(s), luckily we can quickly obtain the coefficients using the following MATLAB code:
+
+s = tf('s');
+
+num = 15.9796 * (s + 0.1791) * (12*s + 1);
+
+den = (4*s + 1) * (50*s + 1) * (12*s + 1) + 15.9796 * (s + 0.1791);
+
+T = num / den;
+disp(T)
+\end{adjustwidth}
+
+\begin{equation}
+    Hence,\ T(s) = \frac{191.7552s^2 + 50.3230s + 2.8619}{2400s^3 + 848s^2 + 81.9796s + 3.8619}
+\end{equation}
+
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Root Locus for the 1st PD Controller.jpg}
+    \caption{Root Locus for the 1st PD Controller}
+    \label{fig:rl_pd1}
+\end{figure}
+
+\FloatBarrier
+\subsection{2nd PD Controller Design (Ogata's Method)}
+
+
+\begin{adjustwidth}{2em}{0pt}
+Katsuhiko Ogata's (2010) lead compensator technique is used to explore different potential , where:
+\end{adjustwidth}
+\begin{equation}
+    G_D(s) = K_D \frac{s + \frac{1}{T}}{s + \frac{1}{\alpha T}}, z_c = \frac{1}{T}, \ p_c = \frac{1}{\alpha T}
+\end{equation}
+
+
+
+\begin{adjustwidth}{2em}{0pt}
+Using the new desired pole $s_{d,new} = -0.0575 \pm j0.0587$, which is same as Section 1.3
+\end{adjustwidth}
+
+\begin{equation}
+\begin{aligned}
+    \phi &= \angle [s_{d,new} - (-1/4)] + \angle [s_{d,new} - (-1/12)] + \angle [s_{d,new} - (-1/50)] - 180^\circ \\
+    &= 16.9583^\circ + 66.2461^\circ + 122.5721^\circ - 180^\circ \\
+    \phi &= 25.7765^\circ \implies \phi/2 = 12.8883^\circ
+\end{aligned}
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+Using the geometric method with reference points $A, B, C, D, P, O$:
+\end{adjustwidth}
+
+\begin{equation}
+\begin{aligned}
+    \angle PBO &= 180^\circ - 45.57^\circ = 134.43^\circ \\
+    B &= \sigma_{d,new} - \frac{\omega_{d,new}}{\tan \theta_{dom}} - \frac{\omega_{d,new}}{\tan \frac{\angle PBO}{2}} = -0.0822
+\end{aligned}
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+From the geometric construction, the compensator pole and zero are determined based on the graph as shown in Figure 2:
+\end{adjustwidth}
+
+\begin{equation}
+    C = -0.112, \quad D = -0.057 \implies p_c = 0.112, \ z_c = 0.057, \ \alpha = 1.9649
+\end{equation}
+
+\begin{equation}
+    Hence,\  G_D(s) = \frac{K_D(s + 0.057)}{(s + 0.112)},\ where \ \alpha = 1.9649
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+The gain $K_D$ is calculated at the desired pole $s = s_{d,new}$:
+\end{adjustwidth}
+
+\begin{equation}
+    K_D = \left| \frac{(s + 0.112)(4s + 1)(50s + 1)(12s + 1)}{1.4(s + 0.057)} \right|_{s = s_{d,new}} = 2.1030
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+Given $K = K_D \cdot 1.4 = 2.9442$:
+\end{adjustwidth}
+
+\begin{equation}
+    G_D(s) \cdot G_OL(s) \cdot H(s) = \frac{2.1030(s + 0.057)}{s + 0.112} \cdot \frac{1.4}{(4s+1)(50s+1)} \cdot \frac{1}{(12s+1)}
+\end{equation}
+
+\begin{equation}
+    T(s) = \frac{2.9442(s + 0.057)(12s+1)}{(4s+1)(50s+1)(12s+1)(s + 0.112)+2.9442(s + 0.057)}
+\end{equation}
+
+\begin{equation}
+    T(s) = \frac{35.330s^2 + 4.958s + 0.1678}{2400s^4 + 1116.8s^3 + 160.976s^2 + 11.336s + 0.2798}
+\end{equation}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Root Locus for the 2nd PD Controller.jpg}
+    \caption{Root Locus for the 2nd PD Controller}
+    \label{fig:rl_pd2}
+\end{figure}
+
+\subsection{PID Controller Design (Ogata's Method)}
+
+\begin{adjustwidth}{2em}{0pt}
+The technique taught in class assumes a PD controller as the ideal integral compensator of the form $G_{PI}(s) = \frac{s + p_c}{s}$. Although it can completely eliminate the $e_{ss}$, it requires require active amplifiers and additional power supplies (N.S. Nise, 2015).  
+
+On the other hand, the lead compensator can be realized through passive circuit, which is more economic and scalable in the industry.
+
+Hence, Ogata's method is used. The work for the derivative part is directly inherited from the previous lead compensator design. To form a PID controller, an integral component $G_I(s)$ is introduced:
+\end{adjustwidth}
+\begin{equation}
+    G_C(s) = K_C \cdot G_I(s) \cdot G_D(s) = K_C\frac{s + \frac{1}{T_2}}{s + \frac{1}{\beta T_2}} \cdot \frac{s + 0.057}{s + 0.112}
+\end{equation}
+
+Assume: 
+\begin{equation}
+     \left| K_C \frac{(s + 0.057)}{s + 0.112} \cdot \frac{1.4}{(4s+1)(50s+1)(12s+1)}\right|_{sd,new} = 1 \implies K_C = 2.1030
+\end{equation}
+\begin{adjustwidth}{2em}{0pt}
+To achieve a steady-state error $e_{ss} = 0.05$, the required position error constant $K_p$ is calculated as:
+\end{adjustwidth}
+\begin{equation}
+    K_p = \frac{1}{e_{ss}} - 1 = \frac{1}{0.05} - 1 = 19
+\end{equation}
+
+\begin{equation}
+    K_p = \lim_{s \to 0} G_I(s)\cdot G_D(s)\cdot G_{OL}(s)\cdot H(s) = \frac{2.103 \times 0.057 \times 1.4}{0.112}\beta = 19 \implies \beta = 12.6803
+\end{equation}
+
+\begin{adjustwidth}{2em}{0pt}
+Trial and error were performed to find a value for $T_2$, with the criteria used: $|G_I(s)| \approx 1$ and $-5^\circ < \angle G_I(s) < 0^\circ$ at the desired pole $s_d = -0.0575 \pm j0.0587$. One suitable possibility found is $T_2 = 45$, resulting in:
+\end{adjustwidth}
+
+\begin{equation}
+    G_I(s) = \frac{s + 0.005}{s + 0.000394}
+\end{equation}
+
+\begin{equation}
+    G_C(s) \cdot G_{OL}(s) = 2.103 \cdot \frac{s + 0.02222}{s + 0.000176} \cdot \frac{s + 0.057}{s + 0.112} \cdot \frac{1.4}{(4s+1)(50s+1)} \cdot \frac{1}{(12s+1)}
+\end{equation}
+
+\begin{equation}
+    T(s) = \frac{2.9442(s + 0.02222)(s + 0.057)(12s+1)}{(s + 0.000176)(s + 0.112)(4s+1)(50s+1)(12s+1) + 2.9442(s + 0.005)(s + 0.057)}
+\end{equation}
+
+\begin{equation}
+T(s) = \frac{35.332s^3 + 5.743s^2 + 0.278s + 0.0037}{2400s^5 + 1117.22s^4 + 161.177s^3 + 11.361s^2 + 0.296s + 0.0009}
+\end{equation}
+\end{document}
